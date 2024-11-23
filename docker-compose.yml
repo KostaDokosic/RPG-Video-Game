@@ -1,0 +1,70 @@
+services:
+  nginx:
+    container_name: nginx
+    image: nginx:mainline-alpine-perl
+    ports:
+      - '${NGINX_PORT}:80'
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    networks:
+      rpg_game_network: {}
+
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:management-alpine
+    volumes:
+      - rabbitmq_data:/data
+    networks:
+      rpg_game_network: {}
+    environment:
+      RABBITMQ_HOST: rabbitmq
+
+  redis:
+    container_name: redis
+    image: redis:7.2-alpine
+    restart: always
+    volumes:
+      - redis_data:/data
+    networks:
+      rpg_game_network: {}
+
+  account-svc:
+    container_name: account-svc
+    build:
+      context: ./
+      dockerfile: ./services/account-svc/Dockerfile
+    environment:
+      - MODE=${DOCKER_MODE}
+    volumes:
+      - ./services/account-svc:/app/services/account-svc
+      - ./services/account-svc/.env.dist:/app/services/account-svc/.env
+      - ./shared:/app/shared
+      - ./seeders/auth:/app/seeders/auth
+    depends_on:
+      - redis
+      - rabbitmq
+      - account-svc-db
+    networks:
+      rpg_game_network: {}
+  account-svc-db:
+    container_name: account-svc-db
+    image: postgres:17
+    restart: always
+    environment:
+      POSTGRES_DB: accounts
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - account_svc_data:/var/lib/postgresql/data
+    networks:
+      rpg_game_network: {}
+
+volumes:
+  redis_data:
+  rabbitmq_data:
+  account_svc_data:
+
+networks:
+  rpg_game_network:
+    external: true
+    name: rpg_game_network_${DEPLOY_TYPE}

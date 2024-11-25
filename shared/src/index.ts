@@ -10,3 +10,4 @@ export * from './lib/validator';
 export * from './lib/password';
 export * from './lib/error';
 export * from './lib/database';
+export * from './lib/paginator';

@@ -9,6 +9,8 @@ import {
   DataType,
   HasOne,
   HasMany,
+  BelongsTo,
+  ForeignKey,
 } from 'sequelize-typescript';
 import CharacterClass from './character.class.model';
 import Item from './item.model';
@@ -60,7 +62,11 @@ class Character extends Model implements ICharacter {
   @Column(DataType.INTEGER)
   public declare createdBy: number;
 
-  @HasOne(() => CharacterClass)
+  @ForeignKey(() => CharacterClass)
+  @Column(DataType.INTEGER)
+  classId: number;
+
+  @BelongsTo(() => CharacterClass)
   public declare class: CharacterClass;
 
   @HasMany(() => Item)

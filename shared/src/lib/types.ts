@@ -1,6 +1,7 @@
 import { Request } from 'express';
 
 export interface IAccount {
+  id?: number;
   name: string;
   role: AccountRole;
 }
@@ -11,7 +12,7 @@ export enum AccountRole {
 }
 
 export interface AuthenticatedRequest extends Request {
-  user: IAccount;
+  account: IAccount;
 }
 
 export interface ICharacter {

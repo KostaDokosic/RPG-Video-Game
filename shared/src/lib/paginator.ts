@@ -29,8 +29,10 @@ export class Paginator {
     queryOptions: FindAndCountOptions = {},
     paginationOptions: PaginationOptions = {}
   ): Promise<PaginatedResult<T>> {
-    const { page = Paginator.DEFAULT_PAGE, limit = Paginator.DEFAULT_LIMIT } =
+    let { page = Paginator.DEFAULT_PAGE, limit = Paginator.DEFAULT_LIMIT } =
       paginationOptions;
+    if (isNaN(page)) page = Paginator.DEFAULT_PAGE;
+    if (isNaN(limit)) limit = Paginator.DEFAULT_LIMIT;
     const offset = (page - 1) * limit;
 
     const { rows, count } = await model.findAndCountAll({

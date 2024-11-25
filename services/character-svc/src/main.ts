@@ -12,7 +12,7 @@ if (process.env.MODE === 'prod') {
   });
 }
 
-const port = process.env.PORT ? Number(process.env.PORT) : 9001;
+const port = process.env.PORT ? Number(process.env.PORT) : 9002;
 const app = new App();
 
 app.listen(port, () => {

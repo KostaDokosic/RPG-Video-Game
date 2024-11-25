@@ -8,6 +8,8 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
+  Unique,
+  HasMany,
 } from 'sequelize-typescript';
 import Character from './character.model';
 
@@ -19,6 +21,7 @@ import Character from './character.model';
 class CharacterClass extends Model implements ICharacterClass {
   @AllowNull(false)
   @NotEmpty
+  @Unique
   @Column(DataType.STRING)
   public declare name: string;
 
@@ -27,12 +30,16 @@ class CharacterClass extends Model implements ICharacterClass {
   @Column(DataType.TEXT)
   public declare description: string;
 
-  @ForeignKey(() => Character)
-  @Column(DataType.INTEGER)
-  characterId: number;
-
-  @BelongsTo(() => Character)
+  @HasMany(() => Character)
   character: Character;
+
+  public static async exists(name: string) {
+    const c = await this.findOne({
+      where: { name },
+      attributes: ['id'],
+    });
+    return c ? true : false;
+  }
 }
 
 export default CharacterClass;

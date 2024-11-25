@@ -6,8 +6,6 @@ import {
   AllowNull,
   Table,
   DataType,
-  ForeignKey,
-  BelongsTo,
   Unique,
   HasMany,
 } from 'sequelize-typescript';
@@ -32,6 +30,13 @@ class CharacterClass extends Model implements ICharacterClass {
 
   @HasMany(() => Character)
   character: Character;
+
+  public get data() {
+    return {
+      name: this.name,
+      description: this.description,
+    };
+  }
 
   public static async exists(name: string) {
     const c = await this.findOne({

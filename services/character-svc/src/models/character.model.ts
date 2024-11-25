@@ -7,10 +7,10 @@ import {
   Table,
   Unique,
   DataType,
-  HasOne,
   HasMany,
   BelongsTo,
   ForeignKey,
+  Default,
 } from 'sequelize-typescript';
 import CharacterClass from './character.class.model';
 import Item from './item.model';
@@ -29,31 +29,37 @@ class Character extends Model implements ICharacter {
 
   @AllowNull(false)
   @NotEmpty
+  @Default(0)
   @Column(DataType.INTEGER)
   public declare health: number;
 
   @AllowNull(false)
   @NotEmpty
+  @Default(0)
   @Column(DataType.INTEGER)
   public declare mana: number;
 
   @AllowNull(false)
   @NotEmpty
+  @Default(0)
   @Column(DataType.INTEGER)
   public declare baseStrength: number;
 
   @AllowNull(false)
   @NotEmpty
+  @Default(0)
   @Column(DataType.INTEGER)
   public declare baseAgility: number;
 
   @AllowNull(false)
   @NotEmpty
+  @Default(0)
   @Column(DataType.INTEGER)
   public declare baseIntelligence: number;
 
   @AllowNull(false)
   @NotEmpty
+  @Default(0)
   @Column(DataType.INTEGER)
   public declare baseFaith: number;
 
@@ -80,16 +86,35 @@ class Character extends Model implements ICharacter {
     return character ? true : false;
   }
 
-  public get stats() {
+  public get data() {
     return {
-      strength: this.items.reduce((acc, val) => val.bonusStrength + acc, 0),
-      agility: this.items.reduce((acc, val) => val.bonusAgility + acc, 0),
-      intelligence: this.items.reduce(
-        (acc, val) => val.bonusIntelligence + acc,
-        0
-      ),
-      faith: this.items.reduce((acc, val) => val.bonusFaith + acc, 0),
+      name: this.name,
+      health: this.health,
+      baseAgility: this.baseAgility,
+      baseStrength: this.baseStrength,
+      baseIntelligence: this.baseIntelligence,
+      baseFaith: this.baseFaith,
+      items: this.items,
+      class: this.class.data,
     };
+  }
+
+  public get stats() {
+    return this.items.reduce(
+      (acc, val) => {
+        acc.strength += val.bonusStrength || 0;
+        acc.agility += val.bonusAgility || 0;
+        acc.intelligence += val.bonusIntelligence || 0;
+        acc.faith += val.bonusFaith || 0;
+        return acc;
+      },
+      {
+        strength: this.baseStrength,
+        agility: this.baseAgility,
+        intelligence: this.baseIntelligence,
+        faith: this.baseFaith,
+      }
+    );
   }
 }
 

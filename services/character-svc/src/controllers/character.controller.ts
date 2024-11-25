@@ -44,7 +44,10 @@ export default class AccountController extends Controller {
       if (!character)
         return res.status(404).json(new Error('Character not found'));
 
-      return res.json(character);
+      return res.json({
+        ...character.data,
+        stats: character.stats,
+      });
     } catch (error) {
       console.error(error);
       return res.status(500).json(new Error('Internal Server Error'));

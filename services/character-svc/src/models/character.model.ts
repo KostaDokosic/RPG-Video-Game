@@ -79,6 +79,18 @@ class Character extends Model implements ICharacter {
     });
     return character ? true : false;
   }
+
+  public get stats() {
+    return {
+      strength: this.items.reduce((acc, val) => val.bonusStrength + acc, 0),
+      agility: this.items.reduce((acc, val) => val.bonusAgility + acc, 0),
+      intelligence: this.items.reduce(
+        (acc, val) => val.bonusIntelligence + acc,
+        0
+      ),
+      faith: this.items.reduce((acc, val) => val.bonusFaith + acc, 0),
+    };
+  }
 }
 
 export default Character;

@@ -1,6 +1,6 @@
 import { config } from 'dotenv';
 import App from './app/character.app';
-import { Database } from '@zentrix/shared';
+import { CacheClient, Database } from '@zentrix/shared';
 import Character from './models/character.model';
 import CharacterClass from './models/character.class.model';
 import Item from './models/item.model';
@@ -22,4 +22,5 @@ app.listen(port, () => {
     CharacterClass,
     Item,
   ]);
+  CacheClient.getInstance().startClient();
 });

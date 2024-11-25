@@ -1,5 +1,6 @@
 import {
   AuthenticatedRequest,
+  CacheClient,
   Controller,
   Error,
   Paginator,
@@ -12,6 +13,10 @@ import CharacterClass from '../models/character.class.model';
 import CreateCharacterValidator from '../schemas/create.character.schema';
 
 export default class AccountController extends Controller {
+  private static getCharacterCacheKey(characterId: number) {
+    return `character_${characterId}`;
+  }
+
   public static async getAllCharacters(
     req: AuthenticatedRequest,
     res: Response
@@ -34,6 +39,12 @@ export default class AccountController extends Controller {
   public static async getCharacter(req: AuthenticatedRequest, res: Response) {
     try {
       const { id } = req.params;
+
+      const cachedCharacter = await CacheClient.getInstance().getObject(
+        AccountController.getCharacterCacheKey(Number(id))
+      );
+      if (cachedCharacter) return res.json(cachedCharacter);
+
       const character = await Character.findByPk(id, {
         include: [
           { model: Item, as: 'items' },
@@ -44,10 +55,15 @@ export default class AccountController extends Controller {
       if (!character)
         return res.status(404).json(new Error('Character not found'));
 
-      return res.json({
+      const fullCharacter = {
         ...character.data,
         stats: character.stats,
-      });
+      };
+      CacheClient.getInstance().setObject(
+        AccountController.getCharacterCacheKey(Number(id)),
+        fullCharacter
+      );
+      return res.json(fullCharacter);
     } catch (error) {
       console.error(error);
       return res.status(500).json(new Error('Internal Server Error'));

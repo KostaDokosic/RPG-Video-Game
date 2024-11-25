@@ -4,6 +4,7 @@ import { CacheClient, Database } from '@zentrix/shared';
 import Character from './models/character.model';
 import CharacterClass from './models/character.class.model';
 import Item from './models/item.model';
+import ItemCharacter from './models/item-character.model';
 
 console.info(`Starting character-svc in ${process.env.MODE || 'dev'} mode...`);
 if (process.env.MODE === 'prod') {
@@ -21,6 +22,7 @@ app.listen(port, () => {
     Character,
     CharacterClass,
     Item,
+    ItemCharacter,
   ]);
   CacheClient.getInstance().startClient();
 });

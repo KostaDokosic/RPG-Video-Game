@@ -12,7 +12,7 @@ import Item from '../models/item.model';
 import CharacterClass from '../models/character.class.model';
 import CreateCharacterValidator from '../schemas/create.character.schema';
 
-export default class AccountController extends Controller {
+export default class CharacterController extends Controller {
   private static getCharacterCacheKey(characterId: number) {
     return `character_${characterId}`;
   }
@@ -41,7 +41,7 @@ export default class AccountController extends Controller {
       const { id } = req.params;
 
       const cachedCharacter = await CacheClient.getInstance().getObject(
-        AccountController.getCharacterCacheKey(Number(id))
+        CharacterController.getCharacterCacheKey(Number(id))
       );
       if (cachedCharacter) return res.json(cachedCharacter);
 
@@ -60,7 +60,7 @@ export default class AccountController extends Controller {
         stats: character.stats,
       };
       CacheClient.getInstance().setObject(
-        AccountController.getCharacterCacheKey(Number(id)),
+        CharacterController.getCharacterCacheKey(Number(id)),
         fullCharacter
       );
       return res.json(fullCharacter);

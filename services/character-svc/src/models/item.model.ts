@@ -8,8 +8,11 @@ import {
   DataType,
   ForeignKey,
   BelongsTo,
+  Unique,
+  BelongsToMany,
 } from 'sequelize-typescript';
 import Character from './character.model';
+import ItemCharacter from './item-character.model';
 
 @Table({
   tableName: 'items',
@@ -19,6 +22,7 @@ import Character from './character.model';
 class Item extends Model implements IItem {
   @AllowNull(false)
   @NotEmpty
+  @Unique
   @Column(DataType.STRING)
   public declare name: string;
 
@@ -47,12 +51,27 @@ class Item extends Model implements IItem {
   @Column(DataType.INTEGER)
   public declare bonusFaith: number;
 
-  @ForeignKey(() => Character)
-  @Column(DataType.INTEGER)
-  characterId: number;
+  @BelongsToMany(() => Character, () => ItemCharacter)
+  characters: Character[];
 
-  @BelongsTo(() => Character)
-  character: Character;
+  public static async exists(name: string) {
+    const item = await this.findOne({
+      where: { name },
+      attributes: ['id'],
+    });
+    return item ? true : false;
+  }
+
+  public get data() {
+    return {
+      name: this.name,
+      description: this.description,
+      bonusStrength: this.bonusStrength,
+      bonusAgility: this.bonusAgility,
+      bonusIntelligence: this.bonusIntelligence,
+      bonusFaith: this.bonusFaith,
+    };
+  }
 }
 
 export default Item;

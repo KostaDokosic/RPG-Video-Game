@@ -11,9 +11,11 @@ import {
   BelongsTo,
   ForeignKey,
   Default,
+  BelongsToMany,
 } from 'sequelize-typescript';
 import CharacterClass from './character.class.model';
 import Item from './item.model';
+import ItemCharacter from './item-character.model';
 
 @Table({
   tableName: 'classes',
@@ -75,8 +77,8 @@ class Character extends Model implements ICharacter {
   @BelongsTo(() => CharacterClass)
   public declare class: CharacterClass;
 
-  @HasMany(() => Item)
-  public declare items: Item[];
+  @BelongsToMany(() => Item, () => ItemCharacter)
+  items: Item[];
 
   public static async exists(name: string) {
     const character = await this.findOne({

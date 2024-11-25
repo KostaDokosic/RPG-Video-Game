@@ -41,3 +41,8 @@ export interface IItem {
   bonusIntelligence: number;
   bonusFaith: number;
 }
+
+export interface IItemCharacter {
+  characterId: number;
+  itemId: number;
+}

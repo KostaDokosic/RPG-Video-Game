@@ -39,7 +39,6 @@ services:
       - ./services/account-svc:/app/services/account-svc
       - ./services/account-svc/.env.dist:/app/services/account-svc/.env
       - ./shared:/app/shared
-      - ./seeders/auth:/app/seeders/auth
     depends_on:
       - redis
       - rabbitmq

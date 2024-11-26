@@ -13,3 +13,4 @@ export * from './lib/database';
 export * from './lib/paginator';
 export * from './lib/auth.middlware';
 export * from './lib/cache';
+export * from './lib/messaging';

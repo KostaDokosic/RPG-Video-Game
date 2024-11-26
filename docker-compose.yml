@@ -8,6 +8,9 @@ services:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
     networks:
       rpg_game_network: {}
+    depends_on:
+      - account-svc
+      - character-svc
 
   rabbitmq:
     container_name: rabbitmq

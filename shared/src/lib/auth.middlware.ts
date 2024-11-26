@@ -2,9 +2,10 @@ import { NextFunction, Request, Response } from 'express';
 import { Error } from './error';
 import { Token } from './token';
 import { AccountRole, AuthenticatedRequest } from './types';
+import { sendMessage } from './messaging';
 
 export class AuthMiddleware {
-  public static isAuth(
+  public static async isAuth(
     req: AuthenticatedRequest,
     res: Response,
     next: NextFunction
@@ -15,6 +16,14 @@ export class AuthMiddleware {
 
       const jwtPayload = Token.verify(token as string);
       if (!jwtPayload) return res.status(401).json(new Error('Not Auth'));
+
+      const accountExists = await sendMessage(
+        'IS_AUTH',
+        'IS_AUTH',
+        'IS_AUTH',
+        jwtPayload.account.id
+      );
+      if (!accountExists) res.status(401).json(new Error('Not Auth'));
 
       req.account = jwtPayload?.account;
       next();

@@ -12,7 +12,6 @@ import {
 import Character from './character.model';
 
 @Table({
-  tableName: 'characters',
   timestamps: true,
   paranoid: true,
 })

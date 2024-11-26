@@ -7,7 +7,6 @@ import {
   Table,
   Unique,
   DataType,
-  HasMany,
   BelongsTo,
   ForeignKey,
   Default,
@@ -18,7 +17,6 @@ import Item from './item.model';
 import ItemCharacter from './item-character.model';
 
 @Table({
-  tableName: 'classes',
   timestamps: true,
   paranoid: true,
 })
@@ -78,7 +76,7 @@ class Character extends Model implements ICharacter {
   public declare class: CharacterClass;
 
   @BelongsToMany(() => Item, () => ItemCharacter)
-  items: Item[];
+  public items!: (Item & { ItemCharacter: { quantity: number } })[];
 
   public static async exists(name: string) {
     const character = await this.findOne({
@@ -101,13 +99,18 @@ class Character extends Model implements ICharacter {
     };
   }
 
-  public get stats() {
-    return this.items.reduce(
-      (acc, val) => {
-        acc.strength += val.bonusStrength || 0;
-        acc.agility += val.bonusAgility || 0;
-        acc.intelligence += val.bonusIntelligence || 0;
-        acc.faith += val.bonusFaith || 0;
+  public async stats() {
+    const itemsWithQuantities = await this.$get('items');
+
+    return itemsWithQuantities.reduce(
+      (acc, item: Item & { ItemCharacter: { quantity: number } }) => {
+        const quantity = item.ItemCharacter?.quantity || 1;
+
+        acc.strength += (item.bonusStrength || 0) * quantity;
+        acc.agility += (item.bonusAgility || 0) * quantity;
+        acc.intelligence += (item.bonusIntelligence || 0) * quantity;
+        acc.faith += (item.bonusFaith || 0) * quantity;
+
         return acc;
       },
       {

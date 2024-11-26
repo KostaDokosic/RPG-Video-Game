@@ -13,7 +13,7 @@ import CharacterClass from '../models/character.class.model';
 import CreateCharacterValidator from '../schemas/create.character.schema';
 
 export default class CharacterController extends Controller {
-  private static getCharacterCacheKey(characterId: number) {
+  public static getCharacterCacheKey(characterId: number) {
     return `character_${characterId}`;
   }
 
@@ -47,7 +47,7 @@ export default class CharacterController extends Controller {
 
       const character = await Character.findByPk(id, {
         include: [
-          { model: Item, as: 'items' },
+          { model: Item, as: 'items', through: { attributes: ['quantity'] } },
           { model: CharacterClass, as: 'class' },
         ],
       });
@@ -57,8 +57,15 @@ export default class CharacterController extends Controller {
 
       const fullCharacter = {
         ...character.data,
-        stats: character.stats,
+        stats: await character.stats(),
+        items: character.items.map((item) => {
+          return {
+            ...item.data,
+            quantity: item.ItemCharacter?.quantity || 1,
+          };
+        }),
       };
+
       CacheClient.getInstance().setObject(
         CharacterController.getCharacterCacheKey(Number(id)),
         fullCharacter

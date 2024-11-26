@@ -16,6 +16,12 @@ class ItemsRouter extends Route {
       ItemsController.getItem
     );
     this.router.post('/', AuthMiddleware.isAuth, ItemsController.createItem);
+    this.router.post(
+      '/grant',
+      AuthMiddleware.isAuth,
+      ItemsController.grantItem
+    );
+    this.router.post('/gift', AuthMiddleware.isAuth, ItemsController.giftItem);
   }
 }
 

@@ -6,8 +6,6 @@ import {
   AllowNull,
   Table,
   DataType,
-  ForeignKey,
-  BelongsTo,
   Unique,
   BelongsToMany,
 } from 'sequelize-typescript';
@@ -15,7 +13,6 @@ import Character from './character.model';
 import ItemCharacter from './item-character.model';
 
 @Table({
-  tableName: 'items',
   timestamps: true,
   paranoid: true,
 })
@@ -64,6 +61,7 @@ class Item extends Model implements IItem {
 
   public get data() {
     return {
+      id: this.id,
       name: this.name,
       description: this.description,
       bonusStrength: this.bonusStrength,

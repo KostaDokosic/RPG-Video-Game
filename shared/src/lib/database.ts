@@ -3,6 +3,10 @@ import { ModelCtor, Sequelize } from 'sequelize-typescript';
 export class Database {
   private static _db: Sequelize;
 
+  public static get db() {
+    return this._db;
+  }
+
   public static async init(
     database: string,
     host: string,

@@ -2,6 +2,7 @@ import {
   AuthenticatedRequest,
   CacheClient,
   Controller,
+  Database,
   Error,
   Paginator,
   ValidateSchema,
@@ -76,6 +77,7 @@ export default class ItemsController extends Controller {
 
   @ValidateSchema(GrantItemValidator)
   public static async grantItem(req: AuthenticatedRequest, res: Response) {
+    const transaction = await Database.db.transaction();
     try {
       const { characterId, itemId } = req.body;
 
@@ -88,9 +90,15 @@ export default class ItemsController extends Controller {
             through: { attributes: ['quantity'] },
           },
         ],
+        transaction,
       });
 
+      if (!character) {
+        return res.status(400).json(new Error('Character not found'));
+      }
+
       const existingItem = character.items.find((i) => i.id == itemId);
+
       if (existingItem) {
         const updatedRows = await ItemCharacter.update(
           { quantity: (existingItem.ItemCharacter.quantity || 0) + 1 },
@@ -99,10 +107,12 @@ export default class ItemsController extends Controller {
               characterId: character.id,
               itemId: itemId,
             },
+            transaction,
           }
         );
 
         if (updatedRows[0] > 0) {
+          await transaction.commit();
           CacheClient.getInstance().destroyObject(
             CharacterController.getCharacterCacheKey(characterId)
           );
@@ -112,26 +122,38 @@ export default class ItemsController extends Controller {
         }
 
         return res
-          .status(500)
-          .json({ error: 'Failed to update item quantity.' });
+          .status(400)
+          .json(new Error('Failed to update item quantity.'));
       }
 
-      const item = await Item.findByPk(itemId, { attributes: ['id'] });
-      await character.$add('items', item.id);
+      const item = await Item.findByPk(itemId, {
+        attributes: ['id'],
+        transaction,
+      });
+
+      if (!item) {
+        return res.status(400).json(new Error('Item not found'));
+      }
+
+      await character.$add('items', item.id, { transaction });
+
+      await transaction.commit();
       CacheClient.getInstance().destroyObject(
         CharacterController.getCharacterCacheKey(characterId)
       );
-      return res
-        .status(200)
-        .json({ message: 'Item successfully assigned to character.' });
+      return res.status(200).json({
+        message: 'Item successfully assigned to character.',
+      });
     } catch (error) {
       console.error(error);
-      return res.status(500).json(new Error('Internal Server Error'));
+      await transaction.rollback();
+      return res.status(500).json({ error: 'Internal Server Error' });
     }
   }
 
   @ValidateSchema(GiftItemValidator)
   public static async giftItem(req: AuthenticatedRequest, res: Response) {
+    const transaction = await Database.db.transaction();
     try {
       const { sourceId, targetId, itemId } = req.body;
 
@@ -144,10 +166,11 @@ export default class ItemsController extends Controller {
             through: { attributes: ['quantity'] },
           },
         ],
+        transaction,
       });
 
       if (!source) {
-        return res.status(404).json({ error: 'Source character not found.' });
+        return res.status(400).json(new Error('Source character not found'));
       }
 
       const sourceItem = source.items.find(
@@ -157,7 +180,7 @@ export default class ItemsController extends Controller {
       if (!sourceItem || sourceItem.ItemCharacter.quantity < 1) {
         return res
           .status(400)
-          .json({ error: `Source character doesn't have this item.` });
+          .json(new Error(`Source character doesn't have this item.`));
       }
 
       const target = await Character.findByPk(targetId, {
@@ -169,10 +192,11 @@ export default class ItemsController extends Controller {
             through: { attributes: ['quantity'] },
           },
         ],
+        transaction,
       });
 
       if (!target) {
-        return res.status(404).json({ error: 'Target character not found.' });
+        return res.status(400).json(new Error('Target character not found'));
       }
 
       if (sourceItem.ItemCharacter.quantity > 1) {
@@ -183,10 +207,11 @@ export default class ItemsController extends Controller {
               characterId: sourceId,
               itemId: itemId,
             },
+            transaction,
           }
         );
       } else {
-        await source.$remove('items', sourceItem);
+        await source.$remove('items', sourceItem, { transaction });
       }
 
       const targetItem = target.items.find(
@@ -201,15 +226,21 @@ export default class ItemsController extends Controller {
               characterId: targetId,
               itemId: itemId,
             },
+            transaction,
           }
         );
       } else {
-        await ItemCharacter.create({
-          characterId: target.id,
-          itemId: itemId,
-          quantity: 1,
-        });
+        await ItemCharacter.create(
+          {
+            characterId: target.id,
+            itemId: itemId,
+            quantity: 1,
+          },
+          { transaction }
+        );
       }
+
+      await transaction.commit();
 
       CacheClient.getInstance().destroyObject(
         CharacterController.getCharacterCacheKey(sourceId)
@@ -221,6 +252,7 @@ export default class ItemsController extends Controller {
       return res.status(200).json({ message: 'Item successfully gifted.' });
     } catch (error) {
       console.error('Error gifting item:', error);
+      await transaction.rollback();
       return res.status(500).json({ error: 'Internal Server Error' });
     }
   }

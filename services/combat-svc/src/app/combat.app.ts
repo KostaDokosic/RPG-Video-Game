@@ -1,11 +1,16 @@
-import { CoreApp } from '@zentrix/shared';
-import challengeRouter from '../routers/challenge.router';
-import combatRouter from '../routers/combat.router';
+import { AuthMiddleware, CoreApp } from '@zentrix/shared';
+import ChallengeController from '../controllers/challenge.controller';
+
+// import combatRouter from '../routers/combat.router';
 
 export default class App extends CoreApp {
   protected async init() {
     super.init();
-    this.router.use('/challenge', challengeRouter.routes);
-    this.router.use('/', combatRouter.routes);
+    this.router.post(
+      '/challenge',
+      AuthMiddleware.isAuth,
+      ChallengeController.challenge
+    );
+    // this.router.use('/', combatRouter.routes);
   }
 }

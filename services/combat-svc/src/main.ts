@@ -1,5 +1,6 @@
 import { config } from 'dotenv';
 import App from './app/combat.app';
+import { CacheClient } from '@zentrix/shared';
 
 console.info(`Starting combat-svc in ${process.env.MODE || 'dev'} mode...`);
 if (process.env.MODE === 'prod') {
@@ -13,4 +14,5 @@ const app = new App();
 
 app.listen(port, () => {
   console.log('Server is listening on port ' + port);
+  CacheClient.getInstance().startClient();
 });

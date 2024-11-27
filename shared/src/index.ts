@@ -10,3 +10,8 @@ export * from './lib/validator';
 export * from './lib/password';
 export * from './lib/error';
 export * from './lib/database';
+export * from './lib/paginator';
+export * from './lib/auth.middlware';
+export * from './lib/cache';
+export * from './lib/messaging';
+export * from './lib/test.helpers';

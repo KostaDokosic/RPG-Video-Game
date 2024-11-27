@@ -3,6 +3,10 @@ import { ModelCtor, Sequelize } from 'sequelize-typescript';
 export class Database {
   private static _db: Sequelize;
 
+  public static get db() {
+    return this._db;
+  }
+
   public static async init(
     database: string,
     host: string,
@@ -28,5 +32,9 @@ export class Database {
       console.error('Unable to connect to the database:', err);
       return null;
     }
+  }
+
+  public static async disconnect() {
+    await this._db.close();
   }
 }

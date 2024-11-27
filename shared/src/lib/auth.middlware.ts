@@ -20,7 +20,6 @@ export class AuthMiddleware {
       const accountExists = await sendMessage(
         'IS_AUTH',
         'IS_AUTH',
-        'IS_AUTH',
         jwtPayload.account.id
       );
       if (!accountExists) res.status(401).json(new Error('Not Auth'));

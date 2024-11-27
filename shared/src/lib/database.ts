@@ -33,4 +33,8 @@ export class Database {
       return null;
     }
   }
+
+  public static async disconnect() {
+    await this._db.close();
+  }
 }

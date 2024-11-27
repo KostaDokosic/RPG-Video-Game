@@ -42,6 +42,7 @@ class Account extends Model implements IAccount {
 
   public get data() {
     return {
+      id: this.id,
       name: this.name,
       role: this.role,
       createdAt: this.createdAt,

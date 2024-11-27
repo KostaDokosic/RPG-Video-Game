@@ -4,7 +4,6 @@ import * as amqp from 'amqplib';
 export async function sendMessage<TRequest, TResponse>(
   exchange: string,
   queue: string,
-  routingKey: string,
   requestContent: TRequest = {} as TRequest
 ): Promise<TResponse> {
   const connection = await amqp.connect('amqp://rabbitmq');

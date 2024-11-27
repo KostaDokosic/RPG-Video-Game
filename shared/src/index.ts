@@ -14,3 +14,4 @@ export * from './lib/paginator';
 export * from './lib/auth.middlware';
 export * from './lib/cache';
 export * from './lib/messaging';
+export * from './lib/test.helpers';

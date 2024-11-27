@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "db:seed": "./seeder.sh"
+    "db:seed": "./seeder.sh",
+    "test": "./tester.sh"
   },
   "private": true,
   "dependencies": {
@@ -22,6 +23,7 @@
     "reflect-metadata": "^0.2.2",
     "sequelize": "^6.37.5",
     "sequelize-typescript": "^2.1.6",
+    "supertest": "^7.0.0",
     "uuid": "^11.0.3",
     "winston": "^3.17.0"
   },
@@ -44,6 +46,7 @@
     "@types/jest": "^29.5.12",
     "@types/morgan": "^1.9.9",
     "@types/node": "~18.16.9",
+    "@types/supertest": "^6.0.2",
     "@types/validator": "^13.12.2",
     "esbuild": "^0.19.2",
     "eslint": "^9.8.0",

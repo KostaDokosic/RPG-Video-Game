@@ -91,6 +91,23 @@ services:
     networks:
       rpg_game_network: {}
 
+  combat-svc:
+    container_name: combat-svc
+    build:
+      context: ./
+      dockerfile: ./services/combat-svc/Dockerfile
+    environment:
+      - MODE=${DOCKER_MODE}
+    volumes:
+      - ./services/combat-svc:/app/services/combat-svc
+      - ./services/combat-svc/.env.dist:/app/services/combat-svc/.env
+      - ./shared:/app/shared
+    depends_on:
+      - redis
+      - rabbitmq
+    networks:
+      rpg_game_network: {}
+
 volumes:
   redis_data:
   rabbitmq_data:

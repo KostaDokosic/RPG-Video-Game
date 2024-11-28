@@ -1,0 +1,438 @@
+{
+	"info": {
+		"_postman_id": "13af35ba-b71c-4241-87e3-6858cb0fbd1d",
+		"name": "RPG Game",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19351822",
+		"_collection_link": "https://martian-shuttle-44359.postman.co/workspace/lcrp~1c574cbb-4175-41ff-920e-3394117ad131/collection/19351822-13af35ba-b71c-4241-87e3-6858cb0fbd1d?action=share&source=collection_link&creator=19351822"
+	},
+	"item": [
+		{
+			"name": "Account Service",
+			"item": [
+				{
+					"name": "Create New Account",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Root\",\r\n    \"password\": \"testTest123\",\r\n    \"password_confirmation\": \"testTest123\",\r\n    \"role\": \"gamemaster\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost/api/account/signup",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"api",
+								"account",
+								"signup"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Sign Into Account",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Root\",\r\n    \"password\": \"testTest123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost/api/account/signin",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"api",
+								"account",
+								"signin"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Character Service",
+			"item": [
+				{
+					"name": "Items",
+					"item": [
+						{
+							"name": "Get Item By Id",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost/api/items/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"api",
+										"items",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create New Item",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Stit\",\n    \"description\": \"Sluzi za odbranu\",\n    \"bonusStrength\": 100,\n    \"bonusAgility\": 50,\n    \"bonusIntelligence\": 10,\n    \"bonusFaith\": 10\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost/api/items",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"api",
+										"items"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get All Items",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost/api/items/?page=1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"api",
+										"items",
+										""
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Grant Item",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"characterId\": 2,\n    \"itemId\": 2\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost/api/items/grant",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"api",
+										"items",
+										"grant"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "GIft Item",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"sourceId\": 1,\n    \"targetId\": 2,\n    \"itemId\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost/api/items/gift",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"api",
+										"items",
+										"gift"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Characters",
+					"item": [
+						{
+							"name": "Get All Characters",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost/api/character/?page=1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"api",
+										"character",
+										""
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Get Character By Id",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost/api/character/1",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"api",
+										"character",
+										"1"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create Character",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Petar\",\n    \"health\": 1000,\n    \"mana\": 100,\n    \"baseStrength\": 200,\n    \"baseAgility\": 150,\n    \"baseIntelligence\": 50,\n    \"baseFaith\": 25,\n    \"class\": {\n        \"name\": \"Archer\",\n        \"description\": \"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer tempus lobortis diam faucibus scelerisque. Nunc vel augue ut lorem sagittis bibendum.\"\n    }\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost/api/character",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"path": [
+										"api",
+										"character"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Combat Service",
+			"item": [
+				{
+					"name": "Attack",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost/api/2/attack",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"api",
+								"2",
+								"attack"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cast",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"attackerId\": 1,\n    \"targetId\": 2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost/api/1/cast",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"api",
+								"1",
+								"cast"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Heal",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"attackerId\": 1,\n    \"targetId\": 2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost/api/1/heal",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"api",
+								"1",
+								"heal"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Challenge",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"attackerId\": 1,\n    \"targetId\": 17\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost/api/challenge",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"path": [
+								"api",
+								"challenge"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50Ijp7ImlkIjoyLCJuYW1lIjoiUm9vdCIsInJvbGUiOiJnYW1lbWFzdGVyIiwicGFzc3dvcmQiOiIkMmIkMTAkR1RMN1FpU3AyVW9XWkNWY0I5OTJ6ZWx1STZVNUo0QkxKNlhvbFJycmpXTjAvQTJseXRsUEsiLCJjcmVhdGVkQXQiOiIyMDI0LTExLTI2VDA5OjA1OjEwLjg0MFoiLCJ1cGRhdGVkQXQiOiIyMDI0LTExLTI2VDA5OjA1OjEwLjg0MFoiLCJkZWxldGVkQXQiOm51bGx9LCJpYXQiOjE3MzI2MTE5MTMsImV4cCI6MTczMzIxNjcxM30.Skmz9W_L7R7k2u9Z00IWSHhrijfk5ysG1_OVmdw0eVQ",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

@@ -17,3 +17,12 @@
 
 - Make sure docker is running and containers are up
 - Run ./seeder.sh to execute all seeders from all services
+
+## Seeded account info:
+
+- Name: Administrator
+- Password: adminAdmin123
+
+## Postman Collection
+
+- RPG Game.postman_collection.json (in repo)

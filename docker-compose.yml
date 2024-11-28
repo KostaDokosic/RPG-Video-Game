@@ -11,6 +11,7 @@ services:
     depends_on:
       - account-svc
       - character-svc
+      - combat-svc
 
   rabbitmq:
     container_name: rabbitmq

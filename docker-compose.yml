@@ -107,12 +107,25 @@ services:
       - rabbitmq
     networks:
       rpg_game_network: {}
+  combat-svc-db:
+    container_name: combat-svc-db
+    image: postgres:17
+    restart: always
+    environment:
+      POSTGRES_DB: combats
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - combat_svc_data:/var/lib/postgresql/data
+    networks:
+      rpg_game_network: {}
 
 volumes:
   redis_data:
   rabbitmq_data:
   account_svc_data:
   character_svc_data:
+  combat_svc_data:
 
 networks:
   rpg_game_network:

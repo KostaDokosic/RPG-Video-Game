@@ -1,7 +1,6 @@
 import { AuthMiddleware, CoreApp } from '@zentrix/shared';
 import ChallengeController from '../controllers/challenge.controller';
-
-// import combatRouter from '../routers/combat.router';
+import combatRouter from '../routers/combat.router';
 
 export default class App extends CoreApp {
   protected async init() {
@@ -11,6 +10,6 @@ export default class App extends CoreApp {
       AuthMiddleware.isAuth,
       ChallengeController.challenge
     );
-    // this.router.use('/', combatRouter.routes);
+    this.router.use('/', combatRouter.routes);
   }
 }

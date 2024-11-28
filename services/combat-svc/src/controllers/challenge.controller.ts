@@ -1,31 +1,42 @@
 import {
   AuthenticatedRequest,
-  CacheClient,
   Controller,
   Error,
   ICharacter,
+  IItem,
   sendMessage,
   ValidateSchema,
 } from '@zentrix/shared';
 import { Response } from 'express';
 import ChallengeValidator from '../schemas/challenge.schema';
+import Duel from '../models/duel.model';
+import { Op } from 'sequelize';
+
+type CharResponse = ICharacter & {
+  id: number;
+  items: Array<IItem>;
+  stats: {
+    strength: number;
+    agility: number;
+    intelligence: number;
+    faith: number;
+  };
+};
 
 export default class ChallengeController extends Controller {
-  private static async getCharacterById(id: number) {
+  public static async getCharacterById(id: number) {
     const response = await sendMessage('GET_CHAR_BY_ID', 'GET_CHAR_BY_ID', id);
     if (!response || Object.keys(response).length === 0) return undefined;
-    type CharResponse = ICharacter & { id: number };
     return response as CharResponse;
-  }
-
-  private static getDuelKey(attacker: number, target: number) {
-    return `duel_${attacker}_${target}`;
   }
 
   @ValidateSchema(ChallengeValidator)
   public static async challenge(req: AuthenticatedRequest, res: Response) {
     try {
       const { attackerId, targetId } = req.body;
+
+      if (attackerId == targetId)
+        return res.status(400).json(new Error('You cant attack yourself'));
 
       //TODO: Moze da se prebaci u validator ali ajd sad...
       const attacker = await ChallengeController.getCharacterById(attackerId);
@@ -39,13 +50,29 @@ export default class ChallengeController extends Controller {
       const target = await ChallengeController.getCharacterById(targetId);
       if (!target) return res.status(400).json(new Error('Invalid target id'));
 
-      const key = ChallengeController.getDuelKey(attackerId, targetId);
-      const exists = await CacheClient.getInstance().exists(key);
+      const exists = await Duel.findOne({
+        where: {
+          [Op.or]: [
+            { attackerId: attackerId },
+            { targetId: targetId },
+            { targetId: attackerId },
+            { attackerId: targetId },
+          ],
+        },
+      });
       if (exists)
-        return res.status(400).json(new Error('Duel already initiated'));
+        return res
+          .status(400)
+          .json(new Error('One of participants is already in duel.'));
 
-      await CacheClient.getInstance().setObject(key, true);
-      return res.status(201).json({ message: 'Duel initiated' });
+      const duel = await Duel.create({
+        attackerId,
+        targetId,
+        nextTurnId: attackerId,
+      });
+      return res
+        .status(201)
+        .json({ message: `Duel initiated with id ${duel.id}`, details: duel });
     } catch (error) {
       console.error(error);
       return res.status(500).json(new Error('Internal Server Error'));

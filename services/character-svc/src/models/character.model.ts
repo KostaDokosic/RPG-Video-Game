@@ -88,6 +88,7 @@ class Character extends Model implements ICharacter {
 
   public get data() {
     return {
+      id: this.id,
       name: this.name,
       health: this.health,
       baseAgility: this.baseAgility,
@@ -96,6 +97,7 @@ class Character extends Model implements ICharacter {
       baseFaith: this.baseFaith,
       items: this.items,
       class: this.class.data,
+      createdBy: this.createdBy,
     };
   }
 

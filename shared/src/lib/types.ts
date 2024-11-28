@@ -46,3 +46,8 @@ export interface IItemCharacter {
   characterId: number;
   itemId: number;
 }
+
+export interface IDuel {
+  attackerId: number;
+  targetId: number;
+}

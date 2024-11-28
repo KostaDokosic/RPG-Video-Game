@@ -48,6 +48,14 @@ export class CacheClient {
     await this.client.set(key, JSON.stringify(data));
   }
 
+  public async setObjectEx(
+    key: string,
+    data: object | boolean | number,
+    ttl: number
+  ): Promise<void> {
+    await this.client.setEx(key, ttl, JSON.stringify(data));
+  }
+
   public async destroyObject(key: string): Promise<void> {
     await this.client.del(key);
   }
